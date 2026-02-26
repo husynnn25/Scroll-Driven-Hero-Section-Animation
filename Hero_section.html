@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Scroll Driven Hero</title>
+
+<style>
+:root {
+  --bg: #0f0f12;
+  --text: #ffffff;
+  --muted: #9ca3af;
+  --accent: #00ffd0;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+.scroll-wrapper {
+  height: 200vh;
+}
+
+
+.hero {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  text-align: center;
+}
+
+.headline {
+  font-size: clamp(32px, 5vw, 70px);
+  letter-spacing: 0.6em;
+  font-weight: 600;
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+.stats {
+  margin-top: 60px;
+  display: flex;
+  gap: 60px;
+}
+
+.stat {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.stat h2 {
+  font-size: 36px;
+  color: var(--accent);
+}
+
+.stat p {
+  font-size: 14px;
+  margin-top: 6px;
+  color: var(--muted);
+}
+
+.visual {
+  position: absolute;
+  bottom: 10%;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #00ffd0, #0077ff);
+  box-shadow: 0 0 80px rgba(0,255,208,0.35);
+  will-change: transform;
+}
+</style>
+</head>
+<body>
+
+<div class="scroll-wrapper">
+  <section class="hero">
+    
+    <h1 class="headline">W E L C O M E&nbsp; I T Z&nbsp; F I Z Z</h1>
+
+    <div class="stats">
+      <div class="stat">
+        <h2>98%</h2>
+        <p>User Satisfaction</p>
+      </div>
+      <div class="stat">
+        <h2>120%</h2>
+        <p>Growth Increase</p>
+      </div>
+      <div class="stat">
+        <h2>4.9★</h2>
+        <p>Average Rating</p>
+      </div>
+    </div>
+
+    <div class="visual"></div>
+
+  </section>
+</div>
+
+<script>
+const headline = document.querySelector(".headline");
+const stats = document.querySelectorAll(".stat");
+const visual = document.querySelector(".visual");
+
+window.addEventListener("load", () => {
+
+  headline.style.transition = "all 1s cubic-bezier(.22,.61,.36,1)";
+  headline.style.opacity = "1";
+  headline.style.transform = "translateY(0)";
+  stats.forEach((stat, i) => {
+    setTimeout(() => {
+      stat.style.transition = "all 0.8s cubic-bezier(.22,.61,.36,1)";
+      stat.style.opacity = "1";
+      stat.style.transform = "translateY(0)";
+    }, 400 + i * 200);
+  });
+});
+
+let targetScroll = 0;
+let currentScroll = 0;
+
+function lerp(start, end, factor) {
+  return start + (end - start) * factor;
+}
+
+window.addEventListener("scroll", () => {
+  targetScroll = window.scrollY;
+});
+
+function animate() {
+
+  currentScroll = lerp(currentScroll, targetScroll, 0.08);
+
+  const maxScroll = window.innerHeight;
+  const progress = Math.min(currentScroll / maxScroll, 1);
+
+  const translateY = progress * -220;
+  const scale = 1 + progress * 0.4;
+  const rotate = progress * 25;
+
+  visual.style.transform =
+    `translateY(${translateY}px) scale(${scale}) rotate(${rotate}deg)`;
+
+  requestAnimationFrame(animate);
+}
+
+animate();
+</script>
+
+</body>
+</html>
